@@ -1,6 +1,5 @@
 package mp.infra;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import mp.config.kafka.KafkaProcessor;
 import mp.domain.Notification;

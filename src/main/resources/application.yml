@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8088
 
 spring:
   application:
@@ -51,8 +51,46 @@ spring:
           destination: book.published.v1
           contentType: application/json
 
+# Authors 서비스 URL 설정
+authors:
+  service:
+    url: ${AUTHORS_SERVICE_URL:http://localhost:8089}
 
 logging:
   level:
     org.hibernate.type: trace
     org.springframework.cloud: debug
+
+---
+
+# Docker 환경 설정
+spring:
+  profiles: docker
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: my-kafka:9092
+        streams:
+          binder:
+            configuration:
+              default:
+                key:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                value:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      bindings:
+        # 구독할 토픽들 (Consumer)
+        author-review-in:
+          group: notifications
+          destination: author.review.v1
+          contentType: application/json
+        book-published-in:
+          group: notifications
+          destination: book.published.v1
+          contentType: application/json
+
+# Docker 환경의 Authors 서비스 URL 설정
+authors:
+  service:
+    url: http://gateway:8089
